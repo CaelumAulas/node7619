@@ -1,27 +1,31 @@
-const LivrosDAO = require('../db/LivrosDAO3')
 module.exports = function(servidor){
-    servidor.get("/", function(request, resposta){
-        
-        const livrosDAO = new LivrosDAO()
-
-        livrosDAO.pegaLivros(function(erro, result){
+    servidor.get("/", function(request, resposta, next){
+        request.livrosDAO.lista(function(erro, result){
             if(erro){
-                resposta.render("erros/500.ejs", {erro})
+                next(erro)
             } else {
-                resposta.render("produtos/lista.ejs", {
+                resposta.render("produtos/lista", {
                     livros: result
                 })
             }
         })
-
-        console.log(livrosDAO.oi)
     })
 
-    servidor.post("/produtos", function(request, resposta){
-        const dados = request.body
+    servidor.get("/produtos/cadastra", function(req, res){
+        res.render("produtos/form", {
+            validationErrors: []
+        })
+    })
+
+    servidor.post("/produtos", function(request, resposta, next){
+        const livro = request.body
         
-        livrosDAO.insereLivros(function(){
-            resposta.send("Cadastrou")
+        request.livrosDAO.insereLivro(livro, function(erro){
+            if(erro){
+               next(erro)
+            } else {
+                resposta.redirect("/")
+            }
         })
     })
 }

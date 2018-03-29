@@ -2,15 +2,15 @@ const pool = require('../db/pool')
 
 class LivrosDAO{
     constructor(){
-        this.conexao = pool.getConnection()
+        this._conexao = pool.getConnection()
     }
 
-    pegaLivros(callback){
-        this.conexao.query("SELECT * FROM livros", callback)
+    lista(callback){
+        this._conexao.query("SELECT * FROM livros", callback)
     }
 
-    insereLivro(callback){
-        this.conexao.query()
+    insereLivro(livro, callback){
+        this._conexao.query("INSERT INTO livros SET ?", livro, callback)
     }
 }
 

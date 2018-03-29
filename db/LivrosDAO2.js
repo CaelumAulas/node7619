@@ -1,10 +1,10 @@
 const pool = require('../db/pool')
 
 function LivrosDAO(){
-    this.conexao = pool.getConnection()
+    this._conexao = pool.getConnection()
 }
 
-LivrosDAO.prototype.pegaLivros = function pegaLivros(callback){
+LivrosDAO.prototype.lista = function pegaLivros(callback){
     this.conexao.query("SELECT * FROM livros", callback)
 }
 
