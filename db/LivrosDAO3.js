@@ -9,8 +9,17 @@ class LivrosDAO{
         this._conexao.query("SELECT * FROM livros", callback)
     }
 
-    insereLivro(livro, callback){
-        this._conexao.query("INSERT INTO livros SET ?", livro, callback)
+    insereLivro(livro){
+        return new Promise((resolve, reject) => {
+            this._conexao.query("INSERT INTO livros SET ?", livro, function(erro){
+                if(erro){
+                    console.log(erro)
+                    reject([erro])
+                } else {
+                    resolve()
+                }
+            })
+        })
     }
 }
 

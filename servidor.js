@@ -6,7 +6,12 @@ const LivrosDAO = require('./db/LivrosDAO3')
 server.set("view engine", "ejs")
 
 server.use(express.urlencoded())
+server.use(express.json())
+
 server.use(express.static("./public"))
+
+const expressValidator = require('express-validator')
+server.use(expressValidator())
 
 server.use(function(req, res, next){
   req.livrosDAO = new LivrosDAO()
@@ -16,11 +21,32 @@ server.use(function(req, res, next){
 require("./rotas/produtos")(server)
 
 server.use(function(req, res, next){
-    res.render("erros/500", {erro: "Erro 404"})
+    res.format({
+        default: function(){
+            res.send({erro: "Erro 404"})
+        }
+        ,html: function(){
+            res.render("erros/500", {erro: "Erro 404"})
+        }
+        ,json: function(){
+            res.send({erro: "Erro 404"})
+        }
+    })
+    
 })
 
 server.use(function(erro, request, resposta, next){
-    resposta.render("erros/500", {erro})
+    resposta.format({
+        default: function(){
+            resposta.send({erro: erro})
+        }
+        ,html: function(){
+            resposta.render("erros/500", {erro})
+        }
+        ,json: function(){
+            resposta.send({erro: erro})
+        }
+    })
 })
 
 module.exports = server
@@ -33,7 +59,7 @@ module.exports = server
 //         dadosString += chunk.toString()   
 //     })
 //     request.on("end",function(){
-//         request.body = queryString.parse(dadosString)
+        // request.body = queryString.parse(dadosString)
 //         next()
 //     })
 // })
